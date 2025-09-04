@@ -1,0 +1,1 @@
+package hamming; import "errors"; func Distance(a, b string) (distance int, e error) { if len(a) != len(b) { return 0, errors.New("") }; for i := range a { if a[i] != b[i] {distance++} }; return }
