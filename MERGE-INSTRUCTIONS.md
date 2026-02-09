@@ -1,10 +1,8 @@
 # How to Merge All Open Pull Requests
 
-This guide explains how to merge all 29 open Exercism solution PRs into the main branch.
+This guide explains how to merge all 29 open Exercism solution PRs into the main branch using the GitHub Action.
 
 ## Quick Start
-
-### Option 1: GitHub Action (Recommended - Automatic!) ⭐
 
 **Once this PR is merged:**
 1. Go to **Actions** tab: https://github.com/Se7enseads/Exercism/actions
@@ -15,17 +13,30 @@ This guide explains how to merge all 29 open Exercism solution PRs into the main
 
 See `.github/GITHUB-ACTION-GUIDE.md` for detailed documentation.
 
-### Option 2: Using the Python Script
-```bash
-python3 merge-all-prs.py
-```
+## What the GitHub Action Does
 
-### Option 3: Using the Bash Script
-```bash
-./merge-all-prs.sh
-```
+- ✅ **Zero setup** - Just merge this PR and trigger the workflow
+- ✅ **Automatic forever** - Future Exercism PRs auto-merge on creation
+- ✅ **One-click** - Process all 29 existing PRs with single workflow run
+- ✅ **No local tools needed** - Runs entirely in GitHub
+- ✅ **Clean history** - Uses rebase strategy
+- ✅ **Safe** - Only merges verified bot PRs
 
-### Option 4: Using GitHub CLI Manually
+## Requirements
+
+- ✅ None! Just merge this PR and trigger the workflow
+
+## After Running
+
+Once complete:
+1. All Exercism solutions will be merged into main branch
+2. Check that everything looks good
+3. Future PRs from the Exercism bot will auto-merge automatically
+
+## Manual Alternative
+
+If you need to merge PRs manually, you can use GitHub CLI:
+
 ```bash
 # List all PRs
 gh pr list --repo Se7enseads/Exercism --state open
@@ -34,44 +45,6 @@ gh pr list --repo Se7enseads/Exercism --state open
 gh pr merge <PR_NUMBER> --repo Se7enseads/Exercism --rebase --auto
 ```
 
-## What These Solutions Do
-
-### GitHub Action (Best Option)
-- ✅ **Zero setup** - Just merge this PR and trigger the workflow
-- ✅ **Automatic forever** - Future Exercism PRs auto-merge on creation
-- ✅ **One-click** - Process all 29 existing PRs with single workflow run
-- ✅ **No local tools needed** - Runs entirely in GitHub
-
-### Manual Scripts (Backup Option)  
-1. Fetch all open PRs (29 Exercism solution PRs)
-2. Display them for your review
-3. Ask for confirmation
-4. Automatically rebase and merge each PR
-5. Provide a summary of results
-
-## Requirements
-
-### For GitHub Action:
-- ✅ None! Just merge this PR
-
-### For Manual Scripts:
-- **GitHub CLI**: Install with `brew install gh` (macOS) or see https://cli.github.com/
-- **Authentication**: Run `gh auth login` if not already authenticated
-- **Python 3**: Only needed if using the Python script
-
-## After Running
-
-Once complete:
-1. All Exercism solutions will be merged into main branch
-2. Check that everything looks good
-3. Close PR #43 (this automation PR)
-
 ## Full Documentation
 
-See `README-MERGE-SCRIPT.md` for detailed documentation, troubleshooting, and manual merge instructions.
-
-## Support
-
-- For script issues: Check prerequisites and error messages
-- For merge conflicts: See the troubleshooting section in README-MERGE-SCRIPT.md
-- For GitHub CLI help: https://cli.github.com/manual/
+See `.github/GITHUB-ACTION-GUIDE.md` for complete documentation, troubleshooting, and customization options.
