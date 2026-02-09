@@ -1,6 +1,6 @@
 # Auto-Merge Setup for Exercism PRs ✨
 
-This PR adds **automatic merging** for Exercism solution PRs!
+This PR adds **automatic merging** for Exercism solution PRs using a GitHub Action!
 
 ## What's New?
 
@@ -11,15 +11,12 @@ This PR adds **automatic merging** for Exercism solution PRs!
 - `.github/workflows/auto-merge-exercism-prs.yml` - GitHub Action workflow
 - `.github/GITHUB-ACTION-GUIDE.md` - Complete documentation
 - `MERGE-INSTRUCTIONS.md` - Quick start guide
-- `merge-all-prs.py` - Python script (backup)
-- `merge-all-prs.sh` - Bash script (backup)
-- `README-MERGE-SCRIPT.md` - Script documentation
 
 ## Quick Start
 
 ### Step 1: Merge This PR
 
-Merge PR #43 to enable the GitHub Action.
+Merge this PR to enable the GitHub Action.
 
 ### Step 2: Trigger the Workflow
 
@@ -49,27 +46,26 @@ graph LR
 ✅ **Safe** - Only merges verified bot PRs  
 ✅ **Fast** - Merges immediately when checks pass  
 ✅ **Ongoing** - Handles all future PRs automatically  
+✅ **No local setup** - Runs entirely in GitHub
 
 ## Documentation
 
 - **Quick start**: `MERGE-INSTRUCTIONS.md`
 - **GitHub Action guide**: `.github/GITHUB-ACTION-GUIDE.md`
-- **Manual scripts**: `README-MERGE-SCRIPT.md`
-
-## Alternative Options
-
-If you prefer manual control, use the provided scripts:
-- `python3 merge-all-prs.py` (recommended)
-- `./merge-all-prs.sh`
 
 ## Next Steps
 
 1. ✅ Review this PR
-2. ✅ Merge PR #43
+2. ✅ Merge this PR
 3. ✅ Go to Actions tab and trigger workflow
 4. ✅ Watch 29 PRs get merged automatically
 5. 🎉 Enjoy automatic merging forever!
 
----
+## Manual Alternative
 
-**Note**: The manual scripts remain available as backup options if you ever need them.
+If you need to merge PRs manually, you can use GitHub CLI:
+
+```bash
+gh pr list --repo Se7enseads/Exercism --state open
+gh pr merge <PR_NUMBER> --repo Se7enseads/Exercism --rebase --auto
+```
