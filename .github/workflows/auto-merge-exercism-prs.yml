@@ -1,0 +1,96 @@
+name: Auto-merge Exercism PRs
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  # Also allow manual trigger to process existing PRs
+  workflow_dispatch:
+
+# Required permissions for auto-merge
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    
+    # Only run for PRs from the Exercism solutions syncer bot
+    if: |
+      github.event.pull_request.user.login == 'exercism-solutions-syncer[bot]' ||
+      github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Auto-merge Exercism PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "🤖 Auto-merging Exercism solution PR #${PR_NUMBER}"
+          
+          # Enable auto-merge with rebase strategy
+          gh pr merge "${PR_NUMBER}" --rebase --auto || {
+            echo "❌ Failed to enable auto-merge. Checking PR status..."
+            gh pr view "${PR_NUMBER}" --json mergeable,mergeStateStatus
+          }
+      
+      - name: Merge all existing Exercism PRs (manual trigger only)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "🔄 Processing all open Exercism PRs..."
+          
+          # Get all open PRs from exercism-solutions-syncer bot
+          prs=$(gh pr list --state open --json number,author --jq '.[] | select(.author.login == "exercism-solutions-syncer[bot]") | .number')
+          
+          if [ -z "$prs" ]; then
+            echo "✅ No Exercism PRs to merge"
+            exit 0
+          fi
+          
+          total=$(echo "$prs" | wc -l)
+          echo "📋 Found ${total} Exercism PRs to process"
+          
+          merged=0
+          failed=0
+          
+          for pr_number in $prs; do
+            echo ""
+            echo "Processing PR #${pr_number}..."
+            
+            # Check if PR is mergeable
+            mergeable=$(gh pr view "${pr_number}" --json mergeable --jq '.mergeable')
+            
+            if [ "$mergeable" == "CONFLICTING" ]; then
+              echo "⚠️  PR #${pr_number} has conflicts - skipping"
+              ((failed++))
+              continue
+            fi
+            
+            # Enable auto-merge
+            if gh pr merge "${pr_number}" --rebase --auto; then
+              echo "✅ PR #${pr_number} queued for auto-merge"
+              ((merged++))
+            else
+              echo "❌ Failed to merge PR #${pr_number}"
+              ((failed++))
+            fi
+            
+            # Rate limit protection
+            sleep 1
+          done
+          
+          echo ""
+          echo "═══════════════════════════"
+          echo "📊 Summary:"
+          echo "   Total: ${total}"
+          echo "   ✅ Merged: ${merged}"
+          echo "   ❌ Failed: ${failed}"
+          echo "═══════════════════════════"
